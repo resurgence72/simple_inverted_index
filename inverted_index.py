@@ -7,10 +7,8 @@ from collections import defaultdict
 class InvertIndex(object):
     """
     倒排索引： 将需要查询的 tags 缓存，做提速查找用，同时支持多种 labels 查找策略：
-    eq   相等
-    ne   不相等
-    rex  正则匹配
-    nrex 正则不匹配
+    invert_index 根本用途仅提速用，同时支持多 labels_group, 多 expr 的灵活查找
+    拼接 sql 或 ORM 也完全可实现
     """
 
     mmap = defaultdict(dict)
@@ -91,6 +89,7 @@ class InvertIndex(object):
             if not len(matcher_set):
                 return matcher_set
 
+        # 根据pks构建最终 result
         return self.build_match_data(matcher_set, target_label)
 
     def build_match_data(self, pks, target_label):
@@ -120,7 +119,7 @@ class InvertIndex(object):
                 if vv in pks:
                     distribute_map[name] += 1
 
-        # 根据group_by 结果构建大根堆
+        # 根据 group_by 结果构建大根堆, 默认返回 top 5
         return self.build_match_top_k([
             LabelGroup(*kv)
             for kv in distribute_map.items()
@@ -133,5 +132,9 @@ class InvertIndex(object):
         return [top.__dict__ for top in heap.top_k(5)]
 
     def show_invert_index(self):
+        """
+        展示当前倒排索引内容 调试用
+        :return:
+        """
         for m in self.mmap.items():
             print(m)

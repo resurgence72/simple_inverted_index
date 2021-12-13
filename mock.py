@@ -2,6 +2,9 @@ import random
 
 
 class ECSInfo(object):
+    """
+    模拟cmdb中资产数据
+    """
 
     def __init__(self, pk, name, tags, ip):
         self.ip = ip
@@ -14,37 +17,52 @@ class ECSInfo(object):
 
 
 class Mock(object):
+    """
+    构建测试用例 调试用
+    """
 
     def __init__(self, max_num):
+        # 地区列表
         self.regain_list = [
             'beijing', 'shanghai', 'hangzhou',
             'tianjin', 'US', 'UA', 'shenzhen'
         ]
+
+        # ecs type
         self.type_list = [
             'prod', 'dev', 'test', 'pro-dev'
         ]
+
+        # 组列表
         self.group_list = [
             'elk', 'k8s', 'docker', 'server_tree',
             'loki', 'jenkins', 'gitlab', 'rtmp',
             'BR', 'm8_teacher_rtmp_server'
         ]
+
+        # 集群信息
         self.cluster_list = [
             'ecs', 'rds', 'elb'
         ]
+
+        # cpu 核数
         self.cpu_core = [
             '2u', '4u', '8u', '16u', '32u'
         ]
+
+        # 内存大小
         self.mem_size = [
             '8G', '32G', '64G', '128G'
         ]
 
+        # 本次 mock 的资产数量
         self.mock_objs_num = max_num
 
     def mock_ecs_objs(self):
         tmp = []
         base_name = 'ecs-{}'
-
         pk_base_list = list(range(self.mock_objs_num))
+
         # 打散 pk
         random.shuffle(pk_base_list)
 
@@ -52,6 +70,7 @@ class Mock(object):
             return '.'.join([str(random.randint(1, 255)) for _ in range(4)])
 
         for pk in pk_base_list:
+            # mock ecs objs
             ip = get_random_ip()
             hostname = base_name.format(pk)
             tags = {
@@ -67,6 +86,13 @@ class Mock(object):
 
 
 class Express(object):
+    """
+    四种匹配规则类型
+    eq   相等
+    ne   不相等
+    rex  正则匹配
+    nrex 正则不匹配
+    """
 
     def __init__(self):
         self.eq = 0

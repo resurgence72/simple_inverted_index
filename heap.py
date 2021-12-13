@@ -2,9 +2,12 @@ import math
 
 
 class Heap(object):
+    """
+    最大堆
+    """
 
-    def __init__(self, nums):
-        self.cache = nums or []
+    def __init__(self, objs):
+        self.cache = objs or []
         self._heapify()
 
     def __len__(self):
@@ -27,7 +30,10 @@ class Heap(object):
         return self.cache[0]
 
     def show(self):
-        # 调用这个函数绘制一颗二叉树出来,DEBUG用
+        """
+         调用这个函数绘制一颗二叉树出来,DEBUG用
+        :return:
+        """
         height = int(math.log2(len(self))) + 1
         for i in range(height):
             width = 2 ** (height - i) - 2
@@ -43,7 +49,6 @@ class Heap(object):
 
     def push(self, num):
         self.cache.append(num)
-        # self.size
         self._siftup(self.size)
 
     def _siftup(self, i):
@@ -74,12 +79,15 @@ class Heap(object):
             i = smaller
 
     def _heapify(self):
+        """
+        构建最大堆
+        :return:
+        """
         for i in reversed(range(len(self) // 2)):
             self._siftdown(i)
 
     def top_k(self, k):
         return [self.pop() for _ in range(k)]
-
 
 
 if __name__ == '__main__':
@@ -91,21 +99,3 @@ if __name__ == '__main__':
     heap.show()
 
     print(heap.top_k(5))
-
-    # print(heap.top_k(2))
-    # heap.push(19)
-    # print('插入19')
-    # heap.show()
-    #
-    # heap.pop()
-    # print('弹出堆顶元素')
-    # heap.show()
-
-    # for _ in range(100):
-    #     num = random.randrange(100)
-    #     nums.append(num)
-    #     heap.push(num)
-    #     assert max(nums) == heap.largest
-    #     nums.remove(heap.pop())
-    #
-    # print('所有测试通过!!!')
