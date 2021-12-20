@@ -87,7 +87,15 @@ class Heap(object):
             self._siftdown(i)
 
     def top_k(self, k):
-        return [self.pop() for _ in range(k)]
+        """
+        兼容队列总数小于 k 的情况
+        :param k:
+        :return:
+        """
+        queue_lens = len(self.cache)
+        top = k if queue_lens >= k else queue_lens
+
+        return [self.pop() for _ in range(top)]
 
 
 if __name__ == '__main__':

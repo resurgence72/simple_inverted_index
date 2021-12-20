@@ -6,7 +6,7 @@ if __name__ == '__main__':
     start = time.time()
 
     # mock ecs 数据
-    invert_index_mock = Mock(max_num=20000)
+    invert_index_mock = Mock(max_num=200)
     ecs_objs = invert_index_mock.mock_ecs_objs()
     print('ecs mock 对象耗时: ', time.time() - start)
 
@@ -41,17 +41,25 @@ if __name__ == '__main__':
         'labels': [
             {'type': exp.eq, 'key': 'regain', 'value': 'beijing'},
             {'type': exp.ne, 'key': 'type', 'value': 'dev'},
-            {'type': exp.rex, 'key': 'ip', 'value': '.*[456]$'},
+            # {'type': exp.rex, 'key': 'ip', 'value': '.*[456]$'},
         ],
-        # 'target_label': 'group'  # 做group_by才时需要打开，比如将match结果按照 group 维度做分组统计
+        'target_label': 'cluster'  # 做group_by才时需要打开，比如将match结果按照 group 维度做分组统计
     }
 
     start = time.time()
+
     # target_label 不存在，即为从倒排索引中拿匹配pks;
     # target_label 存在，则根据 target_label 做 group_by
     match_result = ii.find_match_pks_by_labels(
         req.get('labels'),
         req.get('target_label')
     )
+
+    # cpu / mem /disk 特殊统计需求 求总和的接口
+    # match_result = ii.find_match_sums_by_labels(
+    #     req.get('labels'),
+    #     req.get('target_label')
+    # )
+
     print('find_match_pks_by_labels', time.time() - start)
     print("match_result: ", match_result)

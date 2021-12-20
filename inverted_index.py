@@ -92,6 +92,23 @@ class InvertIndex(object):
         # 根据pks构建最终 result
         return self.build_match_data(matcher_set, target_label)
 
+    def find_match_sums_by_labels(self, labels, target_label):
+        """
+        对 cpu disk mem 特殊统计需求，求总数
+        """
+        base_matchers = self.find_match_pks_by_labels(labels, target_label)
+        total_count = 0
+
+        for matcher in base_matchers:
+            # 表示当前资源配置(可能需要自定义取指定配置数字，此处模拟全部为数字)
+            label = int(matcher['label'])
+            # 表示每个资源的数量
+            count = int(matcher['count'])
+            # 累加综合
+            total_count += label * count
+
+        return {"total_count": total_count}
+
     def build_match_data(self, pks, target_label):
         """
         构建最终返回结果
@@ -120,6 +137,7 @@ class InvertIndex(object):
                     distribute_map[name] += 1
 
         # 根据 group_by 结果构建大根堆, 默认返回 top 5
+        print(distribute_map)
         return self.build_match_top_k([
             LabelGroup(*kv)
             for kv in distribute_map.items()
@@ -128,7 +146,7 @@ class InvertIndex(object):
     @staticmethod
     def build_match_top_k(match_count_group):
         # 构建大根堆 返回top k 的数据
-        heap = Heap(nums=match_count_group)
+        heap = Heap(match_count_group)
         return [top.__dict__ for top in heap.top_k(5)]
 
     def show_invert_index(self):
