@@ -41,9 +41,9 @@ if __name__ == '__main__':
         'labels': [
             {'type': exp.eq, 'key': 'regain', 'value': 'beijing'},
             {'type': exp.ne, 'key': 'type', 'value': 'dev'},
-            # {'type': exp.rex, 'key': 'ip', 'value': '.*[456]$'},
+            {'type': exp.nrex, 'key': 'ip', 'value': '.*[456]$'},
         ],
-        'target_label': 'cluster'  # 做group_by才时需要打开，比如将match结果按照 group 维度做分组统计
+        'target_label': 'cluster'  # 做group_by才时需要打开，比如将match结果按照 cluster 维度做分组统计
     }
 
     start = time.time()
@@ -58,7 +58,7 @@ if __name__ == '__main__':
     # cpu / mem /disk 特殊统计需求 求总和的接口
     # match_result = ii.find_match_sums_by_labels(
     #     req.get('labels'),
-    #     req.get('target_label')
+    #     req.get('target_label') # cpu_core
     # )
 
     print('find_match_pks_by_labels', time.time() - start)

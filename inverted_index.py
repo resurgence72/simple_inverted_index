@@ -125,19 +125,16 @@ class InvertIndex(object):
     def get_group_by_label(self, pks, target_label):
         # 查询根据 target_label 的分布情况
         if target_label not in self.mmap:
-            return {'result': 'inverted-index find label_value'}
+            return {'result': 'inverted-index not find value in labels map'}
 
         distribute_map = defaultdict(int)
         label_values = self.mmap.get(target_label)
 
         # 构建 group_by
         for name, values in label_values.items():
-            for vv in values:
-                if vv in pks:
-                    distribute_map[name] += 1
+            distribute_map[name] = len(values & pks)
 
         # 根据 group_by 结果构建大根堆, 默认返回 top 5
-        print(distribute_map)
         return self.build_match_top_k([
             LabelGroup(*kv)
             for kv in distribute_map.items()
